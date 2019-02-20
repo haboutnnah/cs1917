@@ -1,2 +1,5 @@
 __pycache__
 *.pyc
+*.out
+*.pdf
+.cquery_cache/**
