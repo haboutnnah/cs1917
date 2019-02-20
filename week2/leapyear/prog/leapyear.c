@@ -10,17 +10,19 @@
 int main ( int argc, char * argv[]) {
     // Set some space for the year
     int year;
+    // Set some space aside for the bool value
+    // of if it is a leap year or not.
+    int is_leap_year;
+    // Default to no
+    is_leap_year = 0;
 
     // Ask the user for input
     printf("please enter the year you are interested in \n");
+
     // Store the year that the user gives us
     // The '&' is used because this is a pointer
     scanf("%d", &year);
     assert (year >= START_OF_GREGORIAN_CALENDAR);
-    
-    int is_leap_year;
-    // Default to no
-    is_leap_year = 0;
     
     // '%' returns remainder, if == 0, fully divisible by 0
     
@@ -36,6 +38,7 @@ int main ( int argc, char * argv[]) {
         } 
     }
 
+    // Inform the user
     if (is_leap_year) {
         printf("%d is leap year!\n", year); 
     } else {
