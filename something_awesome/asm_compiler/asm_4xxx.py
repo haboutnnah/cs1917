@@ -112,6 +112,7 @@ if __name__ == "__main__":
                 print(f"Instruction {instruction} = {machine_code}")
 
     # For each instruction that we must follow up on
+    # This is instructions that are jumping to a block
     for instruction in follow_up:
         # The label we are to follow up
         label = final_instructions[instruction]
