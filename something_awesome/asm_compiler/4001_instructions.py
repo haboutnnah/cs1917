@@ -3,14 +3,14 @@
 by Hannah Ivy <contact@hannahi.com>
 
 Instructions
-| Machine Code |  Instruction  | Description     |    Long Description        |
-|--------------|---------------|-----------------|----------------------------|
-|       0      |      HLT      |   Halt          | Stop the program           |
-|       1      |     ADD 1     |   rax = rax+1   | Increase rax by 1          |
-|       2      |     ADD 2     |   rax = rax+2   | Increase rax by 2          |
-|       3      |     ADD 4     |   rax = rax+4   | Increase rax by 4          |
-|       4      |     ADD 8     |   rax = rax+8   | Increase rax by 8          |
-|       7      |      PRT      |   Print rax     | Print the contents of rax  |
+| Machine Code | Instruction | Description | Long Description          |
+|--------------|-------------|-------------|---------------------------|
+| 0            | HLT         | Halt        | Stop the program          |
+| 1            | ADD 1       | rax = rax+1 | Increase rax by 1         |
+| 2            | ADD 2       | rax = rax+2 | Increase rax by 2         |
+| 3            | ADD 4       | rax = rax+4 | Increase rax by 4         |
+| 4            | ADD 8       | rax = rax+8 | Increase rax by 8         |
+| 7            | PRT         | Print rax   | Print the contents of rax |
 
 """
 
@@ -42,7 +42,7 @@ def get_combo(aim: int, ADDS: list) -> list:
         if len(combo) > 0:
             return combo
 
-def parse_instruction(instruction: str) -> int:
+def parse_instruction(instruction: str) -> list:
     """
     Parses instructions for the 4001
     """ 
@@ -53,10 +53,24 @@ def parse_instruction(instruction: str) -> int:
         4:3,
         8:4
     }
+    # The dict we return
+    returnable = {}
 
     # Clean up instruction
-    instruction = instruction.upper()
+    instruction = instruction.lower()
+
+    # Tests for if it is a labelled block
+    a_block = instruction.split(':')
+
+    if len(a_block) > 1:
+        if len(a_block) > 2:
+            raise InvalidInstruction("You can not label an instruction twice.")
+        returnable['label'] = a_block[0]
+        instruction = a_block[1]
+
+
     arr_inst = instruction.split()
+
     # Removes trailing whitespace
     instruction = arr_inst[0]
     machine_code: list = []
@@ -74,13 +88,13 @@ def parse_instruction(instruction: str) -> int:
                                  "Perhaps the code is for the Intel 4003?")
     
     # If the instruction is to halt
-    if instruction == 'HLT':
+    if instruction == 'hlt':
         machine_code.append(0)
     # If it's to add
-    elif instruction == 'ADD':
+    elif instruction == 'add':
         # If it is not the correct amount of bytes, complain.
         if not multibyte:
-            raise InvalidInstruction("ADD instructions must be exactly 2 bytes")
+            raise InvalidInstruction("add instructions must be exactly 2 bytes")
         # If we can hit the aim in 1 instruction, go for it.
         elif int(secondbyte) in ADDS:
             machine_code.append(ADDS[int(secondbyte)])
@@ -88,9 +102,9 @@ def parse_instruction(instruction: str) -> int:
         else:
             # Go find a combo that matches
             out = get_combo(int(secondbyte), ADDS)
-            # If there are no combinarions, complain.
+            # If there are no combinations, complain.
             if len(out) == 0:
-                raise InvalidInstruction("ADD instructions must only modify"
+                raise InvalidInstruction("add instructions must only modify"
                 " one byte (or get there in 4 modifications)")
             # Add the combination in the array of output nicely
             for code in out:
@@ -100,4 +114,7 @@ def parse_instruction(instruction: str) -> int:
         machine_code.append(7)
     else:
         raise NotImplementedError(f"The instruction {instruction} does not exist.")
-    return machine_code
+    
+    returnable["machine_code"] = machine_code
+    
+    return returnable

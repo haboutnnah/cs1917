@@ -14,16 +14,16 @@ colorlinks: true
 
 # ASM Compiler for 4001 and 4001
 
-By [Hannah Ivy](https://www.hannahi.com) <contact@hannahi.com>
+By \[Hannah Ivy](https://www.hannahi.com) <contact@hannahi.com>
 
 This is compiled in to a .pdf using `pandoc ./README.md -o README.pdf`.
 
 The program is run like so:
 
 ```
-usage: python3 ./asm_4xxx.py [-h] [--verbose] processor filename outfile
+usage: python3 ./asm_4xxx.py \[-h] \[--verbose] processor filename outfile
 
-usage: asm_4xxx.py [-h] [--verbose] processor filename outfile
+usage: asm_4xxx.py \[-h] \[--verbose] processor filename outfile
 
 
 positional arguments:
@@ -63,3 +63,25 @@ optional arguments:
 |       7      |      PRT          |         Print rax         |
 |       8      |     JNE rax 0 X   |  Jump to X if rax not 0   |
 |       9      |      JE rax 0 X   |   Jump to X if rax == 0   |
+
+# 4004
+
+| Machine Code | Instruction         | Description            |
+|--------------|---------------------|------------------------|
+| 0            | HLT                 | Halt                   |
+| 1            | ADD %rax $1         | rax = rax+1            |
+| 2            | SUB %rax $1         | rax = rax-1            |
+| 3            | ADD %rbx $1         | rbx = rbx+1            |
+| 4            | SUB %rbx $1         | rax = rax-1            |
+| 5            | ADD %rax %rbx       | rax = rax + rbx        |
+| 6            | SUB %rax %rbx       | rax = rax - rbx        |
+| 7            | PRT                 | Print rax              |
+| 8            | JNE %rax [label]    | Jump to X if rax not 0 |
+| 9            | JE %rax [label]     | Jump to X if rax == 0  |
+| 10           | mov [address] %rax  | [address] -> rax       |
+| 11           | mov [address] %rbx  | [address] -> rbx       |
+| 12           | mov %rax [address]  | rax -> [address]       |
+| 13           | mov %rax [address]  | rbx -> [address]       |
+| 14           | xchg %rax [address] | rax <-> [address]      |
+| 15           | xchg %rbx [address] | rbx <-> [address]      |
+

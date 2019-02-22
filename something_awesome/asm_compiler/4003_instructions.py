@@ -1,36 +1,49 @@
 """
-4001 instruction set for asm_4xxx.py
+4003 instruction set for asm_4xxx.py
 by Hannah Ivy <contact@hannahi.com>
 
 Instructions
 
-| Machine Code |  Instruction      |         Description       |
-|--------------|-------------------|---------------------------|
-|       0      |      HLT          |          Halt             |
-|       1      |     ADD rax, 1    |         rax = rax+1       |
-|       2      |     SUB rax, 1    |         rax = rax-1       |
-|       3      |     ADD rbx, 1    |         rbx = rbx+1       |
-|       4      |     SUB rbx, 1    |         rax = rax-1       |
-|       5      |    XCHG rax rbx   |      Swap rax <-> rbx     |
-|       6      |      BEL          |         Ring Bell         |
-|       7      |      PRT          |         Print rax         |
-|       8      |     JNE rax 0 X   |  Jump to X if rax not 0   |
-|       9      |      JE rax 0 X   |   Jump to X if rax == 0   |
+| Machine Code | Instruction  | Description            |
+|--------------|--------------|------------------------|
+| 0            | HLT          | Halt                   |
+| 1            | ADD rax, 1   | rax = rax+1            |
+| 2            | SUB rax, 1   | rax = rax-1            |
+| 3            | ADD rbx, 1   | rbx = rbx+1            |
+| 4            | SUB rbx, 1   | rax = rax-1            |
+| 5            | XCHG rax rbx | Swap rax <-> rbx       |
+| 6            | BEL          | Ring Bell              |
+| 7            | PRT          | Print rax              |
+| 8            | JNE rax 0 [label]  | Jump to X if rax not 0 |
+| 9            | JE rax 0 [label]   | Jump to X if rax == 0  |
 
 """
 
 from  asm_4xxx import InvalidInstruction
 
-def parse_instruction(instruction: str) -> int:
+def parse_instruction(instruction: str) -> list:
     """
     Parses instructions for the 4003
     """ 
     # Clean up the input
     instruction = instruction.lower()
+
+    # The dict we return
+    returnable = {}
+
     machine_code: list = []
     multibyte: bool = False
     secondbyte: str = ''
     instruction_found: bool = True
+
+    # Tests for if it is a labelled block
+    a_block = instruction.split(':')
+    if len(a_block) > 1:
+        if len(a_block) > 2:
+            raise InvalidInstruction("You can not label an instruction twice.")
+        returnable['label'] = a_block[0]
+        instruction = a_block[1]
+
     # Measure the bytes of the instruction given
     arr_inst = instruction.split()
     arr_inst_len = len(arr_inst)
@@ -85,12 +98,12 @@ def parse_instruction(instruction: str) -> int:
         # Jump if not equal to 
         elif instruction == 'jne':
             machine_code.append(8)
-            machine_code.append(int(fourthbyte))
+            machine_code.append(fourthbyte)
             machine_code.append(True)
         # Jump if equal to
         elif instruction == 'je':
             machine_code.append(9)
-            machine_code.append(int(fourthbyte))
+            machine_code.append(fourthbyte)
             machine_code.append(True)
         else: 
             instruction_found = False
@@ -113,4 +126,7 @@ def parse_instruction(instruction: str) -> int:
         raise NotImplementedError(\
         f"The instruction {instruction} does not exist."
         " Perhaps it is meant to be a multibyte instruction?")
-    return machine_code
+
+    returnable["machine_code"] = machine_code
+    
+    return returnable

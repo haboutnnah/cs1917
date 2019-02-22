@@ -3,18 +3,13 @@
 Parses 4*** asm code to machine code.
 Might not work on a real machine -- this is for UNSW's [CS|HS]1917
 
-By Hannah Ivy <contact@hannahi.com
+By Hannah Ivy <contact@hannahi.com>
 """
 
 import argparse   # Used to parse arguments 
 import importlib  # So we can import the instruction set of a given processor
 import os         # To check if a file exists
 import sys        # To check python version
-
-
-print("Checking your version of python . . .")
-assert sys.version_info >= (3, 6) 
-print("All good!")
 
 class InvalidInstruction(Exception):
     """
@@ -54,6 +49,9 @@ def get_dict_index(dictionary: dict, item: int) -> int:
         i += 1
 
 if __name__ == "__main__":
+    print("Checking your version of python . . .")
+    assert sys.version_info >= (3, 6) 
+    print("All good!")
     # Get arguments
     processor, asm_file, outfile, verbosity = get_args()
     # Protect the user from themselves if they are going to overwrite 
@@ -74,11 +72,12 @@ if __name__ == "__main__":
         # We don't have that processor
         raise NotImplementedError("This processor hasn't been implemented.")
 
-    # A dictionary {line_of_instruction: resulting machine code}
-    final_instructions = {}
-
+    final_instructions = []
+    follow_up = []
+    instruction_count = 0
+    labels = {}
     # For each line in the input file, and keep count starting at 1
-    for line_num, line in enumerate(open(asm_file, 'r'), 1):
+    for line in open(asm_file, 'r'):
         # Remove newlines
         instruction = line.strip()
         # Make sure it's not an empty line or a comment
@@ -88,34 +87,48 @@ if __name__ == "__main__":
             # I dunno why this is here but one time before I needed it
             instruction = instruction.strip()
             # Parses the instruction given
-            machine_code= parse_instruction(instruction)
-            # Add it to the dictionary
-            final_instructions[line_num] = machine_code
+            returned_data= parse_instruction(instruction)
+
+            # Parse the returned data
+            machine_code = returned_data["machine_code"]
+
+            # If ther is a label
+            if "label" in returned_data:
+                # It's a labelled block
+                label = returned_data["label"]
+                if label[0] == '.':
+                    labels[label] = instruction_count
+                else:
+                    raise InvalidInstruction("Labels must start with .")
+
+            for mini_instruction in machine_code:
+                if type(mini_instruction) == str:
+                    follow_up.append(instruction_count)
+                final_instructions.append(mini_instruction)
+                instruction_count += 1
             # Print the instruction translation if the user requests
+
             if verbosity:
                 print(f"Instruction {instruction} = {machine_code}")
 
-    # For each instruction,
-    for _, instruction in final_instructions.items():
-        # If we have the flag at the end,
-        if type(instruction[-1]) == bool and instruction[-1] == True:
-            # Remove the last entry
-            instruction.pop()
-            # The item before the flag is the line to jump to
-            jmp_to = instruction[-1]
-            # Get the instruction number of the line jumping to 
-            # And store it so the processor can understand
-            instruction[-1] = get_dict_index(final_instructions, jmp_to)
+    # For each instruction that we must follow up on
+    for instruction in follow_up:
+        # The label we are to follow up
+        label = final_instructions[instruction]
+        pointer = labels[label]
+        # Change the final instruction
+        final_instructions[instruction] = pointer
+        # Tell the user if they ask
+        if verbosity:
+            print(f"Label {label} is instruction number {labels[label]}")
+
     # Open the output file that the user told us to
     # The w+ means we make it if it doesn't exist already
-    ofile = open(outfile, 'w+')
+    outfile_handle = open(outfile, 'w+')
     # count the amount of instructions in the file
-    instruction_count = 0
-    for _, instructionarr in final_instructions.items():
-        for instruction in instructionarr:
-            instruction_count += 1
-            # Write it out
-            ofile.write(f"{instruction} ")
+    for instruction in final_instructions:
+        # Write it out
+        outfile_handle.write(f"{instruction} ")
     # Exit
     print(f"Compiled with an output of {instruction_count} instructions.")
     exit(0)
