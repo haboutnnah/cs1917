@@ -29,6 +29,9 @@ from enum import Enum
 from  asm_4xxx import InvalidInstruction
 
 class Instructions(Enum):
+    """
+    A list of instructions.
+    """
     halt           =       0 
     add_rax_1      =       1
     sub_rax_1      =       2
@@ -64,13 +67,16 @@ def parse_instruction(instruction: str) -> dict:
         returnable['label'] = a_block[0]
         instruction = a_block[1]
 
-
+    # The actual code
     machine_code: list = []
+
+    # A bool of whether the length of the instruction is >
     multibyte: bool = False
 
     instruction_found: bool = True
     # Measure the bytes of the instruction given
 
+    # The instruction split by spaces
     arr_inst = instruction.split()
     arr_inst_len = len(arr_inst)
 
@@ -95,6 +101,7 @@ def parse_instruction(instruction: str) -> dict:
             if bytes_arr[3][0] == '$':
                 to_add = int(bytes_arr[3][1:])
                 # add numbers
+                # checks which register we're doing
                 if bytes_arr[2] == '%rax':
                     for i in range(to_add):
                         machine_code.append(Instructions.add_rax_1.value)
@@ -103,6 +110,7 @@ def parse_instruction(instruction: str) -> dict:
                         machine_code.append(Instructions.add_rbx_1.value)
             # If they gave us a register, we have to do that
             elif bytes_arr[3][0] == '%':
+                # if they're adding rax to rbx
                 if bytes_arr[2] == '%rax':
                     if bytes_arr[3] == '%rbx':
                         machine_code.append(Instructions.add_rax_rbx.value)
@@ -117,9 +125,10 @@ def parse_instruction(instruction: str) -> dict:
         elif instruction == 'sub':
             # Check if the user gave us a number
             if bytes_arr[3][0] == '$':
+                # the number sans the $ at the front
                 to_sub = int(bytes_arr[3][1:])
-                # sub numbers
-                if bytes_arr[2] == '%rax':
+                # find register to manipulate
+                if bytes_arr[2] == '%rax': 
                     for i in range(to_sub):
                         machine_code.append(Instructions.sub_rax_1.value)
                 elif bytes_arr[2] == '%rbx':
@@ -156,7 +165,7 @@ def parse_instruction(instruction: str) -> dict:
         # Copy data
         elif instruction == 'mov':
             # Find out the instruction
-            if bytes_arr[2][0] == "%":
+            if bytes_arr[2][0] == "%": # if register
                 if bytes_arr[2] == '%rax':
                     machine_code.append(Instructions.mov_rax_x.value)
                 elif bytes_arr[2] == '%rbx':
