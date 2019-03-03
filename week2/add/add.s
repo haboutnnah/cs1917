@@ -3,13 +3,13 @@
 ; This is for the Intel 4003
 ; Hannah Ivy <contact@hannahi.com>
 
-je rax 0 13 ; if it is 0, die
+.addition: je rax 0 .exit ; if it is 0, die
 
-add rbx 1 
-sub rax 1
+           add rbx 1 
+           sub rax 1
 
-jne rax 0 6
+           jne rax 0 .addition
 
-xchg rax rbx
-prt
-hlt
+.exit: xchg rax rbx
+       prt
+       hlt

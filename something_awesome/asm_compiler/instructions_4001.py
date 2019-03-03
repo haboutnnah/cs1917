@@ -3,19 +3,19 @@
 by Hannah Ivy <contact@hannahi.com>
 
 Instructions
-| Machine Code | Instruction | Description | Long Description          |
-|--------------|-------------|-------------|---------------------------|
-| 0            | HLT         | Halt        | Stop the program          |
-| 1            | ADD 1       | rax = rax+1 | Increase rax by 1         |
-| 2            | ADD 2       | rax = rax+2 | Increase rax by 2         |
-| 3            | ADD 4       | rax = rax+4 | Increase rax by 4         |
-| 4            | ADD 8       | rax = rax+8 | Increase rax by 8         |
-| 7            | PRT         | Print rax   | Print the contents of rax |
+| Machine Code |  Instruction  | Description     |    Long Description        |
+|--------------|---------------|-----------------|----------------------------|
+|       0      |      hlt      |   Halt          | Stop the program           |
+|       1      |     add 1     |   rax = rax+1   | Increase rax by 1          |
+|       2      |     add 2     |   rax = rax+2   | Increase rax by 2          |
+|       3      |     add 4     |   rax = rax+4   | Increase rax by 4          |
+|       4      |     add 8     |   rax = rax+8   | Increase rax by 8          |
+|       7      |      prt      |   Print rax     | Print the contents of rax  |
 
 """
 
 
-from asm_4xxx import InvalidInstruction
+from cs1917_assembler import InvalidInstruction
 from itertools import combinations
 
 def iterate_through_options(length: int, aim, ADDS: dict) -> list:
@@ -110,7 +110,7 @@ def parse_instruction(instruction: str) -> list:
             for code in out:
                 machine_code.append(code)
     # If it's to print.
-    elif  instruction == 'PRT': # Custom instruction, no x86 print
+    elif  instruction == 'prt': # Custom instruction, no x86 print
         machine_code.append(7)
     else:
         raise NotImplementedError(f"The instruction {instruction} does not exist.")

@@ -4,22 +4,22 @@ by Hannah Ivy <contact@hannahi.com>
 
 Instructions
 
-| Machine Code | Instruction  | Description            |
-|--------------|--------------|------------------------|
-| 0            | HLT          | Halt                   |
-| 1            | ADD rax, 1   | rax = rax+1            |
-| 2            | SUB rax, 1   | rax = rax-1            |
-| 3            | ADD rbx, 1   | rbx = rbx+1            |
-| 4            | SUB rbx, 1   | rax = rax-1            |
-| 5            | XCHG rax rbx | Swap rax <-> rbx       |
-| 6            | BEL          | Ring Bell              |
-| 7            | PRT          | Print rax              |
-| 8            | JNE rax 0 [label]  | Jump to X if rax not 0 |
-| 9            | JE rax 0 [label]   | Jump to X if rax == 0  |
+| Machine Code |  Instruction      |         Description       |
+|--------------|-------------------|---------------------------|
+|       0      |      hlt          |          Halt             |
+|       1      |     add rax, 1    |         rax = rax+1       |
+|       2      |     sub rax, 1    |         rax = rax-1       |
+|       3      |     add rbx, 1    |         rbx = rbx+1       |
+|       4      |     sub rbx, 1    |         rax = rax-1       |
+|       5      |    XCHG rax rbx   |      Swap rax <-> rbx     |
+|       6      |      BEL          |         Ring Bell         |
+|       7      |      prt          |         Print rax         |
+|       8      |     jne rax 0 X   |  Jump to X if rax not 0   |
+|       9      |      JE rax 0 X   |   Jump to X if rax == 0   |
 
 """
 
-from  asm_4xxx import InvalidInstruction
+from cs1917_assembler import InvalidInstruction
 
 def parse_instruction(instruction: str) -> list:
     """
@@ -99,12 +99,10 @@ def parse_instruction(instruction: str) -> list:
         elif instruction == 'jne':
             machine_code.append(8)
             machine_code.append(fourthbyte)
-            machine_code.append(True)
         # Jump if equal to
         elif instruction == 'je':
             machine_code.append(9)
             machine_code.append(fourthbyte)
-            machine_code.append(True)
         else: 
             instruction_found = False
     # Halt

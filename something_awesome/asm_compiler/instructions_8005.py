@@ -1,32 +1,34 @@
 """
-4004 instruction set for asm_4xxx.py
+4005 instruction set for asm_4xxx.py
 by Hannah Ivy <contact@hannahi.com>
 
 Instructions
 
-| Machine Code | Instruction         | Description            |
-|--------------|---------------------|------------------------|
-| 0            | HLT                 | Halt                   |
-| 1            | ADD %rax $1         | rax = rax+1            |
-| 2            | SUB %rax $1         | rax = rax-1            |
-| 3            | ADD %rbx $1         | rbx = rbx+1            |
-| 4            | SUB %rbx $1         | rax = rax-1            |
-| 5            | ADD %rax %rbx       | rax = rax + rbx        |
-| 6            | SUB %rax %rbx       | rax = rax - rbx        |
-| 7            | PRT                 | Print rax              |
-| 8            | JNE %rax [label]    | Jump to X if rax not 0 |
-| 9            | JE %rax [label]     | Jump to X if rax == 0  |
-| 10           | mov [address] %rax  | [address] -> rax       |
-| 11           | mov [address] %rbx  | [address] -> rbx       |
-| 12           | mov %rax [address]  | rax -> [address]       |
-| 13           | mov %rax [address]  | rbx -> [address]       |
-| 14           | xchg %rax [address] | rax <-> [address]      |
-| 15           | xchg %rbx [address] | rbx <-> [address]      |
+| Machine Code | Instruction             | Description            |
+|--------------|-------------------------|------------------------|
+| 0            | hlt                     | Halt                   |
+| 1            | add %rax $1             | rax = rax+1            |
+| 2            | sub %rax $1             | rax = rax-1            |
+| 3            | add %rbx $1             | rbx = rbx+1            |
+| 4            | sub %rbx $1             | rax = rax-1            |
+| 5            | add %rax %rbx           | rax = rax + rbx        |
+| 6            | sub %rax %rbx           | rax = rax - rbx        |
+| 7            | prt                     | Print rax              |
+| 8            | jne %rax [label]        | Jump to X if rax not 0 |
+| 9            | je %rax [label]         | Jump to X if rax == 0  |
+| 10           | mov [address] %rax      | [address] -> rax       |
+| 11           | mov [address] %rbx      | [address] -> rbx       |
+| 12           | mov %rax [address]      | rax -> [address]       |
+| 13           | mov %rax [address]      | rbx -> [address]       |
+| 14           | xchg %rax [address]     | rax <-> [address]      |
+| 15           | xchg %rbx [address]     | rbx <-> [address]      |
+| 16           | bel                     | Ring bell (yay!)       |
+| 17           | prta Print rax as ascii |                        |
 
 """
 
 from enum import Enum
-from  asm_4xxx import InvalidInstruction
+from  cs1917_assembler import InvalidInstruction
 
 class Instructions(Enum):
     """
@@ -48,11 +50,14 @@ class Instructions(Enum):
     mov_rbx_x      =       13
     xchg_rax_x     =       14
     xchg_rbx_x     =       15
+    ring_bell      =       16 
+    print_ascii    =       17
+
 
 
 def parse_instruction(instruction: str) -> dict:
     """
-    Parses instructions for the 4003
+    Parses instructions for the 8005
     """ 
     # The dict we return
     returnable = {}
@@ -118,7 +123,7 @@ def parse_instruction(instruction: str) -> dict:
                     raise InvalidInstruction("You can only add "
                                              "rbx and rax")
             else:
-                raise InvalidInstruction("In the 4004 instruction set,"
+                raise InvalidInstruction("In the 8005 instruction set,"
                                          " prefix registers with %,"
                                          " and integers with $.")
         # If we're subtracting
@@ -143,7 +148,7 @@ def parse_instruction(instruction: str) -> dict:
                     raise InvalidInstruction("You can only sub "
                                              "rbx and rax")
             else:
-                raise InvalidInstruction("In the 4004 instruction set,"
+                raise InvalidInstruction("In the 8005 instruction set,"
                                          " prefix registers with %,"
                                          " and integers with $.")
                                          
@@ -164,44 +169,44 @@ def parse_instruction(instruction: str) -> dict:
             
         # Copy data
         elif instruction == 'mov':
-            # Find out the instruction
-            if bytes_arr[2][0] == "%": # if register
-                if bytes_arr[2] == '%rax':
-                    machine_code.append(Instructions.mov_rax_x.value)
-                elif bytes_arr[2] == '%rbx':
-                    machine_code.append(Instructions.mov_rbx_x.value)
+            move_to   = bytes_arr[2]
+            move_from = bytes_arr[3]
+            if move_to[0] == "%":
+                # We're writing $VAL in to a register
+                if move_from[0] == '$':
+                    if move_to == "%rax":
+                        machine_code.append(
+                            Instructions.mov_x_rax.value)
+                        machine_code.append(int(move_from[1:]))
+                    elif move_to == "%rbx":
+                        machine_code.append(
+                            Instructions.mov_x_rbx.value)
+                        machine_code.append(int(move_from[1:]))
+                    else: 
+                        raise InvalidInstruction("Invalid register")
                 else:
-                    raise InvalidInstruction("rax or rbx are the "
-                                             "registers on the 4004")
-                # Parse payload
-                if bytes_arr[3][0] == '$': # they gave an address 
-                    machine_code.append(int(bytes_arr[3][1:]))
-                elif bytes_arr[3][0] == '.': # they gave us a label
-                    machine_code.append(bytes_arr[3])
+                    raise InvalidInstruction("You must write a "
+                                             "value to a register.")
+            elif move_to[1] == "$":
+                # We're writing a register to memory
+                if move_from[0] == '%':
+                    if move_from == "%rax":
+                        machine_code.append(
+                            Instructions.mov_rax_x.value)
+                        machine_code.append(int(move_to[1:]))
+                    elif move_from == "%rbx":
+                        machine_code.append(
+                            Instructions.mov_rbx_x.value)
+                        machine_code.append(int(move_to[1:]))
+                    else: 
+                        raise InvalidInstruction("Invalid register")
                 else:
-                    raise InvalidInstruction("You have not provided "
-                                            "an address or register.")
-
-            elif bytes_arr[3][0] == "%":
-                if bytes_arr[3] == '%rax':
-                    machine_code.append(Instructions.mov_x_rax.value)
-                elif bytes_arr[3] == '%rbx':
-                    machine_code.append(Instructions.mov_x_rbx.value)
-                else:
-                    raise InvalidInstruction("rax or rbx are the "
-                                             "registers on the 4004")
-                # Parse payload
-                if bytes_arr[2][0] == '$': # they gave an address 
-                    machine_code.append(int(bytes_arr[2][1:]))
-                elif bytes_arr[2][0] == '.': # they gave us a label
-                    machine_code.append(bytes_arr[2])
-                else:
-                    raise InvalidInstruction("You have not provided "
-                                            "an address or register.")
-
+                    raise InvalidInstruction("You must write a "
+                                             "value to a register.")
+            # TODO: Deal with moving to a label.
             else:
-                raise InvalidInstruction("You must address a register")
-
+                raise InvalidInstruction("You must have "
+                                         "arguments for a mov")
 
 
         # Jump if not equal to 
@@ -227,10 +232,15 @@ def parse_instruction(instruction: str) -> dict:
     elif instruction == 'hlt':
         machine_code.append(Instructions.halt.value)
     # Print
-    elif  instruction == 'prt': # Custom instruction, no x86 print
+    elif instruction == 'prt': # Custom instruction, no x86 print
         machine_code.append(Instructions.print_int.value)
+    # Print as ascii
+    elif instruction == 'prta':
+        machine_code.append(Instructions.print_ascii.value)
     # Ring bell
-    
+    elif instruction == 'bel':
+        machine_code.append(Instructions.ring_bell.value)
+
     # If the instruction is none of these
     elif not instruction_found:
         raise NotImplementedError(\

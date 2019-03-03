@@ -6,14 +6,15 @@
 ; rax = thing to subtract from
 ; rbx = amount to subtract
 
-je rax 0 17 ; if we need to subtract 0, we can safely exit.
+.subtraction: je rax 0 .exit ; if we need to subtract 0, we can safely exit.
 
-sub rbx 1   ; subtract 1 from rbx and rax.
-sub rax 1
+              sub rbx 1   ; subtract 1 from rbx and rax.
+              sub rax 1
 
-xchg rax rbx ; focus on the amount to subtract
-jne rax 0 10 ; if it's not zero, then subtract another number (loop)
+              xchg rax rbx ; focus on the amount to subtract
 
-xchg rax rbx ; if it's not zero, swap them so we can
-prt          ; print the answer and
-hlt          ; exit
+jne rax 0 .subtraction ; if it's not zero, then subtract another number (loop)
+
+.exit: xchg rax rbx ; if it's not zero, swap them so we can
+       prt          ; print the answer and
+       hlt          ; exit

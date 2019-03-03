@@ -62,7 +62,7 @@ if __name__ == "__main__":
         exit(1)
 
     # The file name to import
-    inst_filename: str = f"{processor}_instructions"
+    inst_filename: str = f"instructions_{processor}"
     # Test if its there
     if os.path.isfile(f"{inst_filename}.py"):
         # Import it and set the function to a neat name
@@ -106,11 +106,9 @@ if __name__ == "__main__":
                     follow_up.append(instruction_count)
                 final_instructions.append(mini_instruction)
                 instruction_count += 1
-            # Print the instruction translation if the user requests
-
+            # Print the instruction translation if the user request
             if verbosity:
                 print(f"Instruction {instruction} = {machine_code}")
-
     # For each instruction that we must follow up on
     # This is instructions that are jumping to a block
     for instruction in follow_up:
@@ -122,6 +120,9 @@ if __name__ == "__main__":
         # Tell the user if they ask
         if verbosity:
             print(f"Label {label} is instruction number {labels[label]}")
+    if verbosity:
+        print("The instructions, compiled are",
+              str(final_instructions).replace('[','').replace(']',''))
 
     # Open the output file that the user told us to
     # The w+ means we make it if it doesn't exist already
