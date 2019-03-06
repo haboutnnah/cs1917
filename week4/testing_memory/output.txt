@@ -1,0 +1,47 @@
+========== OTHER ========
+sizeof char = 1 bytes
+========= UNSIGNED =======
+sizeof(ul) = 8 bytes
+sizeof(ui) = 4 bytes
+sizeof(ull) = 8 bytes
+sizeof(us) = 2 bytes
+========== SIGNED ========
+sizeof(sl) = 8 bytes
+sizeof(si) = 4 bytes
+sizeof(sll) = 8 bytes
+sizeof(ss) = 2 bytes
+========= OTHER =======
+sizeof(l) = 8 bytes
+sizeof(i) = 4 bytes
+sizeof(ll) = 8 bytes
+sizeof(s) = 2 bytes
+sizeof(f) = 4 bytes
+sizeof(d) = 8 bytes
+address of c 0x7ffef1e414ef 
+address of ul 0x7ffef1e414e0 
+address of ui0x7ffef1e414dc 
+address of ull0x7ffef1e414d0 
+address of us 0x7ffef1e414ce 
+address of sl 0x7ffef1e414c0 
+address of si 0x7ffef1e414bc 
+address of sll 0x7ffef1e414b0 
+address of ss 0x7ffef1e414ae 
+address of l 0x7ffef1e414a0 
+address of i 0x7ffef1e4149c 
+address of ll0x7ffef1e41490 
+address of s 0x7ffef1e4148e 
+address of f 0x7ffef1e41488 
+address of d 0x7ffef1e41480 
+Minimum of char: -128
+Maximum of char: 127
+Minimum of signed short: -32768
+Maximum of signed short: 32767
+Maximum of unsigned short: 65535
+Minimum of signed int: -2147483648
+Maximum of signed int : 2147483647
+Maximum of unsigned int: -1
+Maximum of char: 127
+Minimum of char: -128
+Maximum of char: 127
+Minimum of char: -128
+Maximum of char: 127
