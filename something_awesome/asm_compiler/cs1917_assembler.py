@@ -16,7 +16,6 @@ class InvalidInstruction(Exception):
     """
     An exception for when there is an invalid instruction by the enduser.
     """
-
     pass
 
 

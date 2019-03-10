@@ -39,8 +39,8 @@ Here's a neat table, with all dates in ISO 8601 format:
 | General: Blog blog blog!                    | True              | 2019-02-17     | 2019-02-27 |
 | General: Week 0 Feedback                    | True              | 2019-02-17     | 2019-02-27 |
 | Revision and Challenges                     | True              | 2019-02-17     | 2019-02-27 |
-| Microprocessors: 4001 - "Big Piece of Pie"  | True              | 2019-02-17     | 2019-02-27 |
-| Microprocessors: 4003 - "Subtract"          | False \[Optional] | N/A            | 2019-02-27 |
+| Microprocessors: 4001 - "Big Piece of Pie"  | False \[Optional]              |  N/A     | 2019-02-27 |
+| Microprocessors: 4003 - "Subtract"          | True | 2019-02-17           | 2019-02-27 |
 
 
 ### Lecture Notes
