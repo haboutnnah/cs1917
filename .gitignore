@@ -7,3 +7,5 @@ __pycache__
 *.swp
 .idea**
 *.exe
+.DS_Store
+
